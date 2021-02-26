@@ -2,7 +2,7 @@ import {TemplateValueFormatter} from "./formatters";
 
 type ParsedTemplate = (string | ((context: Record<string, any>) => string))[];
 
-const R_URL_VAR = /\${[\w_]+}/g;
+const R_URL_VAR = /\u0024{[\w_]+}/g;
 
 // Функция разворачивает escape-последовательности в шаблонах features.getAsTemplate
 function unescapeTemplateString(value: string): string {
