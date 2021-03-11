@@ -20,4 +20,8 @@ describe('jsLikeGet', () => {
 	test('inset 2 not exists', () => {
 		expect(jsLikeGet('p.key', {p: undefined})).toEqual(undefined);
 	});
+
+	test('inset 3', () => {
+		expect(jsLikeGet('a.b.c', {a: {b: {c: 'value'}}})).toEqual('value');
+	});
 });
