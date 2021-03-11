@@ -1,6 +1,8 @@
+import {jsLikeGet} from "./jsLikeGet";
+
 export interface TemplateValueFormatterOptions<T = unknown> {
 	validate(value: unknown): asserts value is T;
-	format(value: T): string;
+	format(path: string[], value: T): string;
 }
 
 export interface TemplateValueFormatter<T> extends TemplateValueFormatterOptions<T> {
@@ -10,6 +12,7 @@ export interface TemplateValueFormatter<T> extends TemplateValueFormatterOptions
 export interface Formatters {
 	String: TemplateValueFormatter<string>;
 	Number: TemplateValueFormatter<number>;
+	Any: TemplateValueFormatter<any>;
 }
 
 export function createFormatter<T>(options: TemplateValueFormatterOptions<T>): TemplateValueFormatter<T> {
@@ -30,7 +33,7 @@ export const formatters: Formatters = {
 				throw new Error('Bad format');
 			}
 		},
-		format(value: string): string {
+		format(_key: string[], value: string): string {
 			return String(value);
 		},
 	}),
@@ -41,8 +44,19 @@ export const formatters: Formatters = {
 				throw new Error('Bad format');
 			}
 		},
-		format(value: number): string {
+		format(_key: string[], value: number): string {
 			return String(value);
 		},
 	}),
+
+	Any: createFormatter({
+		validate(_value: unknown): boolean {
+			return true;
+		},
+		format(key: string[], value: any): string {
+			value = jsLikeGet(key, value);
+
+			return String(value);
+		},
+	})
 };

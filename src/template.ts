@@ -2,7 +2,7 @@ import {TemplateValueFormatter} from "./formatters";
 
 type ParsedTemplate = (string | ((context: Record<string, any>) => string))[];
 
-const R_URL_VAR = /\u0024{[\w_]+}/g;
+const R_URL_VAR = /\u0024{[\w_.]+}/g;
 
 // Функция разворачивает escape-последовательности в шаблонах features.getAsTemplate
 function unescapeTemplateString(value: string): string {
@@ -77,9 +77,11 @@ export function makeTemplate<D extends Record<string, TemplateValueFormatter<unk
 
 				// Создаём функцию её форматирования
 				formatter = (context: Record<string, unknown>) => {
+					const [varName, ...path] = name.split('.');
+
 					// TODO: Figure out how to get rid of any here
-					(descriptor[name].validate as any)(context[name]);
-					return descriptor[name].format(context[name]);
+					(descriptor[varName].validate as any)(context[varName]);
+					return descriptor[varName].format(path, context[varName]);
 				}
 
 				// Записываем

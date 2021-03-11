@@ -48,4 +48,19 @@ describe('makeTemplate', () => {
 
     expect(value({var1: '1'} as any)).toEqual('Hello! 1/');
   });
+
+  test('Template with any object', () => {
+    const value = makeTemplate('Hello, ${p.user.name} ${p.value}!', {
+      p: formatters.Any,
+    });
+
+    expect(value({
+      p: {
+        user: {
+          name: 'Username',
+        },
+        value: 'value',
+      },
+    })).toEqual('Hello, Username value!');
+  });
 });
